@@ -1,0 +1,28 @@
+#include <opencv2/opencv.hpp>
+#include <iostream>
+
+int main()
+{
+    cv::Mat img = cv::imread("C:\\Users\\Nikita\\Desktop\\markers.png");
+
+    if (img.empty()) {
+        std::cout << "Error: Could not load image!" << std::endl;
+        return -1;
+    }
+
+    cv::imshow("Original", img);
+    cv::Mat hsv;
+    cv::cvtColor(img, hsv, cv::COLOR_BGR2HSV);
+    cv::Mat yellowMask;
+    cv::inRange(hsv, cv::Scalar(20, 100, 100), cv::Scalar(40, 255, 255), yellowMask);
+    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5));
+    cv::morphologyEx(yellowMask, yellowMask, cv::MORPH_OPEN, kernel);
+    cv::morphologyEx(yellowMask, yellowMask, cv::MORPH_CLOSE, kernel);
+    cv::Mat result = cv::Mat::zeros(img.size(), img.type());
+    img.copyTo(result, yellowMask);
+    cv::imshow("Yellow mask", yellowMask);
+    cv::imshow("Only yellow marker", result);
+    cv::imwrite("only_yellow_marker.jpg", result);
+    cv::waitKey(0);
+    return 0;
+}
