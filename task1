@@ -1,0 +1,44 @@
+#include <opencv2/opencv.hpp>
+#include <iostream>
+
+int main()
+{
+    cv::Mat image = cv::imread("C:\\Users\\Nikita\\Desktop\\memka.png");
+
+    if (image.empty()) {
+        std::cout << "Error: Could not load image!" << std::endl;
+        return -1;
+    }
+
+    cv::imshow("Original Image", image);
+
+    cv::Mat gray;
+    cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
+    cv::imshow("Grayscale", gray);
+
+    cv::Mat resized;
+    cv::resize(image, resized, cv::Size(image.cols / 2, image.rows / 2));
+    cv::imshow("Resized", resized);
+
+    cv::Mat rotated;
+    cv::Point2f center(image.cols / 2.0f, image.rows / 2.0f);
+    cv::Mat rotationMatrix = cv::getRotationMatrix2D(center, 45, 1.0);
+    cv::warpAffine(image, rotated, rotationMatrix, image.size());
+    cv::imshow("Rotated", rotated);
+
+    cv::Mat blurred;
+    cv::GaussianBlur(image, blurred, cv::Size(15, 15), 0);
+    cv::imshow("Blur", blurred);
+
+    cv::Mat edges;
+    cv::Canny(image, edges, 100, 200);
+    cv::imshow("Canny Edges", edges);
+
+    // Сохраняем два обработанных изображения в папку с проектом
+    cv::imwrite("grayscale_image.png", gray);
+    cv::imwrite("edges_image.png", edges);
+    std::cout << "Images saved!" << std::endl;
+
+    cv::waitKey(0);
+    return 0;
+}
