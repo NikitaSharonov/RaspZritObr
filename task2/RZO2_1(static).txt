@@ -1,0 +1,30 @@
+#include <opencv2/opencv.hpp>
+#include <vector>
+
+int main()
+{
+    cv::Mat canvas(600, 800, CV_8UC3, cv::Scalar(255, 255, 255));
+
+    cv::line(canvas, cv::Point(0, 0), cv::Point(799, 599), cv::Scalar(255, 0, 0), 3);
+
+    cv::rectangle(canvas, cv::Point(100, 100), cv::Point(300, 250), cv::Scalar(0, 255, 0), 2);
+
+    cv::circle(canvas, cv::Point(400, 300), 100, cv::Scalar(0, 0, 255), -1);
+
+    cv::ellipse(canvas, cv::Point(400, 300), cv::Size(150, 70), 30, 0, 360, cv::Scalar(0, 255, 255), 2);
+
+    std::vector<cv::Point> pts = { cv::Point(500, 100), cv::Point(600, 150),
+                                   cv::Point(650, 250), cv::Point(550, 300),
+                                   cv::Point(450, 200) };
+    cv::polylines(canvas, pts, true, cv::Scalar(255, 255, 0), 2);
+
+    cv::putText(canvas, "Sharonov N.A. 22-PM-1", cv::Point(500, 550),
+        cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(0, 0, 0), 2);
+
+    cv::imshow("Tipa paint", canvas);
+
+    cv::imwrite("drawing_on_white.png", canvas);
+
+    cv::waitKey(0);
+    return 0;
+}

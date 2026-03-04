@@ -1,0 +1,72 @@
+#include <opencv2/opencv.hpp>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+
+int main()
+{
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
+
+    cv::Mat baseCanvas(600, 800, CV_8UC3, cv::Scalar(255, 255, 255));
+
+    cv::line(baseCanvas, cv::Point(0, 0), cv::Point(799, 599), cv::Scalar(255, 0, 0), 3);
+    cv::rectangle(baseCanvas, cv::Point(100, 100), cv::Point(300, 250), cv::Scalar(0, 255, 0), 2);
+    cv::circle(baseCanvas, cv::Point(400, 300), 100, cv::Scalar(0, 0, 255), -1);
+    cv::ellipse(baseCanvas, cv::Point(400, 300), cv::Size(150, 70), 30, 0, 360, cv::Scalar(0, 255, 255), 2);
+
+    std::vector<cv::Point> pts = { cv::Point(500, 100), cv::Point(600, 150),
+                                   cv::Point(650, 250), cv::Point(550, 300),
+                                   cv::Point(450, 200) };
+    cv::polylines(baseCanvas, pts, true, cv::Scalar(255, 255, 0), 2);
+
+    std::string text = "Sharonov N.A. 22-PM-1";
+
+    int textX = 100 + std::rand() % 400;
+    int textY = 100 + std::rand() % 300;
+
+
+    int speedX = 2;
+    int speedY = 2;
+
+
+    int textWidth = text.length() * 12; 
+    int textHeight = 20;                 
+
+    cv::namedWindow("Tipa paint", cv::WINDOW_NORMAL);
+
+    while (true) {
+        cv::Mat frame = baseCanvas.clone();
+
+        cv::putText(frame, text, cv::Point(textX, textY),
+            cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(0, 0, 0), 2);
+
+        cv::imshow("Tipa paint", frame);
+
+        textX += speedX;
+        textY += speedY;
+
+        if (textX <= 0) {
+            textX = 0;  
+            speedX = -speedX;  
+        }
+        if (textX + textWidth >= 800) {
+            textX = 800 - textWidth;
+            speedX = -speedX;
+        }
+
+        if (textY <= textHeight) {
+            textY = textHeight;
+            speedY = -speedY;
+        }
+        if (textY >= 600) {
+            textY = 600;
+            speedY = -speedY;
+        }
+
+        int key = cv::waitKey(20); 
+        if (key == 27) { 
+            break;
+        }
+    }
+    return 0;
+}
